@@ -1,0 +1,17 @@
+# Maven output
+/target/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Java class files
+*.class
+
+# JAR files
+*.jar               
+
+
+

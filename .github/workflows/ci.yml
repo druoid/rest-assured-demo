@@ -1,0 +1,52 @@
+name: Run API Tests with Allure Report
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Run tests with Maven
+      run: mvn clean test test -D allure.results.directory=target/allure-results
+
+    - name: Set up Allure CLI
+      run: |
+        curl -L -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+        tar -xzf allure.tgz
+        mv allure-2.27.0 allure-cli
+        echo "${PWD}/allure-cli/bin" >> $GITHUB_PATH
+
+    - name: Generate Allure Report
+      run: |
+        allure generate target/allure-results --clean -o target/allure-report
+
+    - name: Upload Allure Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-report
+        path: target/allure-report
+
+
+    
