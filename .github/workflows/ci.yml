@@ -29,7 +29,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Run tests with Maven
-      run: mvn clean test test -D allure.results.directory=target/allure-results
+      run: mvn clean test -D allure.results.directory=target/allure-results
 
     - name: Set up Allure CLI
       run: |
