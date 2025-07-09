@@ -54,7 +54,7 @@
   <build>
     <testResources>
       <testResource>
-        <directory>src/test/java/com/example/restassured/resources/GetBookingJsonSchema.json</directory>
+        <directory>src/test/java/com/example/restassured/resources</directory>
       </testResource>
     </testResources>
     <plugins>
