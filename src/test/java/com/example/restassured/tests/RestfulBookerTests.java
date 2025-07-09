@@ -9,8 +9,6 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import com.example.restassured.config.BaseConfig;
 
-import io.qameta.allure.*;
-
 public class RestfulBookerTests extends BaseConfig {
     @Test
     public void createNewBooking() {
