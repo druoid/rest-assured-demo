@@ -1,4 +1,6 @@
-package com.example.restassured.util;
+package com.example.restassured.utils;
+
+import com.example.restassured.config.RestfulBookerEndpoints;
 
 import static io.restassured.RestAssured.*;
 
@@ -13,10 +15,9 @@ public class TestUtils {
         """;
 
         return given()
-            .header("Content-Type", "application/json")
             .body(authBody)
         .when()
-            .post("/auth")
+            .post(RestfulBookerEndpoints.AUTH)
         .then()
             .statusCode(200)
             .extract().path("token");
@@ -38,10 +39,9 @@ public class TestUtils {
         """;
 
         return given()
-            .header("Content-Type", "application/json")
             .body(bookingBody)
         .when()
-            .post("/booking")
+            .post(RestfulBookerEndpoints.ALL_BOOKINGS)
         .then()
             .statusCode(200)
             .extract().path("bookingid");
