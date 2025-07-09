@@ -52,6 +52,11 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/main/java/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
       <!-- Compiler plugin to ensure Java 17 is used -->
       <plugin>
