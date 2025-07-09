@@ -1,4 +1,4 @@
-name: Run API Tests with Allure Report
+name: Run API Tests
 
 on:
   push:

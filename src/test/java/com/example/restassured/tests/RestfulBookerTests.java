@@ -7,9 +7,11 @@ import static com.example.restassured.utils.TestUtils.createBooking;
 import static com.example.restassured.utils.TestUtils.getAuthToken;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import io.restassured.module.jsv.JsonSchemaValidator;
 import com.example.restassured.config.BaseConfig;
 
 public class RestfulBookerTests extends BaseConfig {
+
     @Test
     public void createNewBooking() {
 
@@ -42,6 +44,7 @@ public class RestfulBookerTests extends BaseConfig {
             .body("booking.additionalneeds", equalTo("Breakfast"))
             .body("bookingid", notNullValue());
     }
+
     @Test
     public void getBookingById_shouldReturnBookingDetails() {
 
@@ -61,6 +64,20 @@ public class RestfulBookerTests extends BaseConfig {
             .body("bookingdates.checkin", notNullValue())
             .body("bookingdates.checkout", notNullValue());
     }
+
+    @Test
+    public void testGetBookingSchemaJSON() {
+
+        int bookingId = createBooking();
+
+        given()
+                .pathParam("bookingId", bookingId)
+                .when()
+                .get(RestfulBookerEndpoints.SINGLE_BOOKING)
+                .then()
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetBookingJsonSchema.json"));
+    }
+
     @Test
     public void getAllBookingIds() {
         given()
@@ -70,6 +87,7 @@ public class RestfulBookerTests extends BaseConfig {
             .statusCode(200)
             .body("$", not(empty())); // Ensures the response body is not empty
     }
+
     @Test
     public void updateBooking_withValidToken_shouldSucceed() {
         // Use utils to get token and booking ID
@@ -108,6 +126,7 @@ public class RestfulBookerTests extends BaseConfig {
             .body("bookingdates.checkout", equalTo("2023-02-05"))
             .body("additionalneeds", equalTo("Lunch"));
     }
+
     @Test
     public void deleteBooking_withValidToken_shouldSucceed() {
         // Get token and booking ID using utility methods
