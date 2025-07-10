@@ -146,7 +146,6 @@ public class RestfulBookerTests extends BaseConfig {
             .pathParam("bookingId", bookingId)
             .body(updatedBooking)
             .cookie("token", token)
-            .contentType("application/json")
         .when()
             .put(RestfulBookerEndpoints.SINGLE_BOOKING)
         .then()
