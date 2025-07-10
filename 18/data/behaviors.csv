@@ -1,0 +1,7 @@
+"Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
+"Booking API","User updates a booking","User updates an existing booking","0","1","0","0","0"
+"Booking API","Get booking by id schema is validated","Get booking by id schema is validated","0","1","0","0","0"
+"Booking API","Create Booking","User creates a new booking","0","1","0","0","0"
+"Booking API","User retrieves booking by ID","User retrieves booking details using booking ID","0","0","1","0","0"
+"Booking API","User retrieves all booking IDs","User retrieves all booking IDs","0","0","1","0","0"
+"Booking API","Delete a Booking","User deletes an existing booking","0","0","1","0","0"
