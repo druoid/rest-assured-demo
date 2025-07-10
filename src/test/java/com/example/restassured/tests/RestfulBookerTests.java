@@ -3,13 +3,19 @@ package com.example.restassured.tests;
 import com.example.restassured.config.RestfulBookerEndpoints;
 import org.junit.jupiter.api.Test;
 
-import static com.example.restassured.utils.TestUtils.createBooking;
+import static com.example.restassured.utils.TestUtils.*;
 import static com.example.restassured.utils.TestUtils.getAuthToken;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import com.example.restassured.config.BaseConfig;
 import io.qameta.allure.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+
+import java.util.Map;
+import java.util.HashMap;
+
 
 public class RestfulBookerTests extends BaseConfig {
 
@@ -18,22 +24,22 @@ public class RestfulBookerTests extends BaseConfig {
     @Story("User creates a new booking")
     @Owner("andrew")
     @Severity(SeverityLevel.NORMAL)
-    @Test
-    public void createNewBooking() {
+    @ParameterizedTest
+    @CsvFileSource(resources = "/testdata/booking_data.csv", numLinesToSkip = 1)
+    public void createNewBooking(String firstname, String lastname, int totalprice, boolean depositpaid,
+                                 String checkin, String checkout, String additionalneeds) {
 
-        String requestBody = """
-        {
-            "firstname" : "Jim",
-            "lastname" : "Brown",
-            "totalprice" : 111,
-            "depositpaid" : true,
-            "bookingdates" : {
-                "checkin" : "2023-01-01",
-                "checkout" : "2023-01-02"
-            },
-            "additionalneeds" : "Breakfast"
-        }
-        """;
+        Map<String, Object> bookingDates = new HashMap<>();
+        bookingDates.put("checkin", checkin);
+        bookingDates.put("checkout", checkout);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("firstname", firstname);
+        requestBody.put("lastname", lastname);
+        requestBody.put("totalprice", totalprice);
+        requestBody.put("depositpaid", depositpaid);
+        requestBody.put("bookingdates", bookingDates);
+        requestBody.put("additionalneeds", additionalneeds);
 
         given()
             .body(requestBody)
@@ -41,15 +47,16 @@ public class RestfulBookerTests extends BaseConfig {
             .post(RestfulBookerEndpoints.ALL_BOOKINGS)
         .then()
             .statusCode(200)
-            .body("booking.firstname", equalTo("Jim"))
-            .body("booking.lastname", equalTo("Brown"))
-            .body("booking.totalprice", equalTo(111))
-            .body("booking.depositpaid", equalTo(true))
-            .body("booking.bookingdates.checkin", equalTo("2023-01-01"))
-            .body("booking.bookingdates.checkout", equalTo("2023-01-02"))
-            .body("booking.additionalneeds", equalTo("Breakfast"))
+            .body("booking.firstname", equalTo(firstname))
+            .body("booking.lastname", equalTo(lastname))
+            .body("booking.totalprice", equalTo(totalprice))
+            .body("booking.depositpaid", equalTo(depositpaid))
+            .body("booking.bookingdates.checkin", equalTo(checkin))
+            .body("booking.bookingdates.checkout", equalTo(checkout))
+            .body("booking.additionalneeds", equalTo(additionalneeds))
             .body("bookingid", notNullValue());
     }
+
 
     @Epic("Booking API")
     @Feature("User retrieves booking by ID")
@@ -87,11 +94,11 @@ public class RestfulBookerTests extends BaseConfig {
         int bookingId = createBooking();
 
         given()
-                .pathParam("bookingId", bookingId)
-                .when()
-                .get(RestfulBookerEndpoints.SINGLE_BOOKING)
-                .then()
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetBookingJsonSchema.json"));
+            .pathParam("bookingId", bookingId)
+        .when()
+            .get(RestfulBookerEndpoints.SINGLE_BOOKING)
+        .then()
+            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetBookingJsonSchema.json"));
     }
 
     @Epic("Booking API")
@@ -106,7 +113,7 @@ public class RestfulBookerTests extends BaseConfig {
             .get( RestfulBookerEndpoints.ALL_BOOKINGS )
         .then()
             .statusCode(200)
-            .body("$", not(empty())); // Ensures the response body is not empty
+            .body("$", not(empty()));
     }
 
     @Epic("Booking API")
@@ -114,43 +121,43 @@ public class RestfulBookerTests extends BaseConfig {
     @Story("User updates an existing booking")
     @Owner("andrew")
     @Severity(SeverityLevel.NORMAL)
-    @Test
-    public void updateBooking_withValidToken_shouldSucceed() {
-        // Use utils to get token and booking ID
+    @ParameterizedTest
+    @CsvFileSource(resources = "/testdata/booking_data.csv", numLinesToSkip = 1)
+    public void updateBooking_withValidToken_shouldSucceed(String firstname, String lastname, int totalprice,
+                                                           boolean depositpaid, String checkin, String checkout,
+                                                           String additionalneeds) {
+
         String token = getAuthToken();
         int bookingId = createBooking();
 
-        // Updated booking payload
-        String updatedBooking = """
-            {
-              "firstname": "Jane",
-              "lastname": "Smith",
-              "totalprice": 222,
-              "depositpaid": false,
-              "bookingdates": {
-                "checkin": "2023-02-01",
-                "checkout": "2023-02-05"
-              },
-              "additionalneeds": "Lunch"
-            }
-        """;
+        Map<String, Object> bookingDates = new HashMap<>();
+        bookingDates.put("checkin", checkin);
+        bookingDates.put("checkout", checkout);
 
-        // PUT request to update the booking
+        Map<String, Object> updatedBooking = new HashMap<>();
+        updatedBooking.put("firstname", firstname);
+        updatedBooking.put("lastname", lastname);
+        updatedBooking.put("totalprice", totalprice);
+        updatedBooking.put("depositpaid", depositpaid);
+        updatedBooking.put("bookingdates", bookingDates);
+        updatedBooking.put("additionalneeds", additionalneeds);
+
         given()
             .pathParam("bookingId", bookingId)
             .body(updatedBooking)
             .cookie("token", token)
+            .contentType("application/json")
         .when()
-            .put( RestfulBookerEndpoints.SINGLE_BOOKING )
+            .put(RestfulBookerEndpoints.SINGLE_BOOKING)
         .then()
             .statusCode(200)
-            .body("firstname", equalTo("Jane"))
-            .body("lastname", equalTo("Smith"))
-            .body("totalprice", equalTo(222))
-            .body("depositpaid", equalTo(false))
-            .body("bookingdates.checkin", equalTo("2023-02-01"))
-            .body("bookingdates.checkout", equalTo("2023-02-05"))
-            .body("additionalneeds", equalTo("Lunch"));
+            .body("firstname", equalTo(firstname))
+            .body("lastname", equalTo(lastname))
+            .body("totalprice", equalTo(totalprice))
+            .body("depositpaid", equalTo(depositpaid))
+            .body("bookingdates.checkin", equalTo(checkin))
+            .body("bookingdates.checkout", equalTo(checkout))
+            .body("additionalneeds", equalTo(additionalneeds));
     }
 
     @Epic("Booking API")
