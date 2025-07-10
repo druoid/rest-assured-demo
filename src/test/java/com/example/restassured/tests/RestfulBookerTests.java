@@ -98,7 +98,7 @@ public class RestfulBookerTests extends BaseConfig {
         .when()
             .get(RestfulBookerEndpoints.SINGLE_BOOKING)
         .then()
-            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetBookingJsonSchema.json"));
+            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/GetBookingJsonSchema.json"));
     }
 
     @Epic("Booking API")
