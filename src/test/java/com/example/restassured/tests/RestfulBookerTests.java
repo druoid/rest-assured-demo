@@ -9,9 +9,15 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import com.example.restassured.config.BaseConfig;
+import io.qameta.allure.*;
 
 public class RestfulBookerTests extends BaseConfig {
 
+    @Epic("Booking API")
+    @Feature("Create Booking")
+    @Story("User creates a new booking")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void createNewBooking() {
 
@@ -45,6 +51,11 @@ public class RestfulBookerTests extends BaseConfig {
             .body("bookingid", notNullValue());
     }
 
+    @Epic("Booking API")
+    @Feature("User retrieves booking by ID")
+    @Story("User retrieves booking details using booking ID")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void getBookingById_shouldReturnBookingDetails() {
 
@@ -65,6 +76,11 @@ public class RestfulBookerTests extends BaseConfig {
             .body("bookingdates.checkout", notNullValue());
     }
 
+    @Epic("Booking API")
+    @Feature("Get booking by id schema is validated")
+    @Story("Get booking by id schema is validated")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void testGetBookingSchemaJSON() {
 
@@ -78,6 +94,11 @@ public class RestfulBookerTests extends BaseConfig {
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetBookingJsonSchema.json"));
     }
 
+    @Epic("Booking API")
+    @Feature("User retrieves all booking IDs")
+    @Story("User retrieves all booking IDs")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void getAllBookingIds() {
         given()
@@ -88,6 +109,11 @@ public class RestfulBookerTests extends BaseConfig {
             .body("$", not(empty())); // Ensures the response body is not empty
     }
 
+    @Epic("Booking API")
+    @Feature("User updates a booking")
+    @Story("User updates an existing booking")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void updateBooking_withValidToken_shouldSucceed() {
         // Use utils to get token and booking ID
@@ -127,6 +153,11 @@ public class RestfulBookerTests extends BaseConfig {
             .body("additionalneeds", equalTo("Lunch"));
     }
 
+    @Epic("Booking API")
+    @Feature("Delete a Booking")
+    @Story("User deletes an existing booking")
+    @Owner("andrew")
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void deleteBooking_withValidToken_shouldSucceed() {
         // Get token and booking ID using utility methods

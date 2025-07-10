@@ -6,6 +6,7 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import org.junit.jupiter.api.BeforeAll;
+import io.qameta.allure.restassured.AllureRestAssured;
 
 import static org.hamcrest.Matchers.lessThan;
 
@@ -20,6 +21,7 @@ public class BaseConfig {
                 .setAccept("application/json")
                 .addFilter( new RequestLoggingFilter())
                 .addFilter( new ResponseLoggingFilter())
+                .addFilter( new AllureRestAssured())
                 .build();
 
         RestAssured.responseSpecification = new ResponseSpecBuilder()

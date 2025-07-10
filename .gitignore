@@ -17,4 +17,7 @@
 *.iml
 .idea/
 
+#Allure results directory
+/allure-results
+/allure-report
 
