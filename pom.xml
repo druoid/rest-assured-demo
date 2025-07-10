@@ -65,7 +65,7 @@
       <artifactId>allure-bom</artifactId>
       <version>${allure.version}</version>
       <type>pom</type>
-      <scope>import</scope>
+      <scope>test</scope>
     </dependency>
 
     <!-- AspectJ for Allure -->
