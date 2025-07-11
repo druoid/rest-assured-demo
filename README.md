@@ -3,6 +3,8 @@
 This rest-assured-demo example contains an API automation framework using Java and Rest Assured to test the Restful
 Booker API at https://restful-booker.herokuapp.com
 
+It includes positive and negative tests including schema validation, github actions with Allure reports published to github pages and applies DRY principles.
+
 ## Getting the Latest Code
 
 To get the latest code open your IDE terminal and navigate to where you would like the project to reside (usually a dev folder) and run `git clone https://github.com/druoid/rest-assured-demo.git`
