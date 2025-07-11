@@ -14,8 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.util.Map;
-import java.util.HashMap;
-
 
 public class RestfulBookerTests extends BaseConfig {
 
@@ -29,22 +27,12 @@ public class RestfulBookerTests extends BaseConfig {
     public void createNewBooking(String firstname, String lastname, int totalprice, boolean depositpaid,
                                  String checkin, String checkout, String additionalneeds) {
 
-        Map<String, Object> bookingDates = new HashMap<>();
-        bookingDates.put("checkin", checkin);
-        bookingDates.put("checkout", checkout);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("firstname", firstname);
-        requestBody.put("lastname", lastname);
-        requestBody.put("totalprice", totalprice);
-        requestBody.put("depositpaid", depositpaid);
-        requestBody.put("bookingdates", bookingDates);
-        requestBody.put("additionalneeds", additionalneeds);
+        Map<String, Object> requestBody = buildBookingPayload(firstname, lastname, totalprice, depositpaid, checkin, checkout, additionalneeds);
 
         given()
             .body(requestBody)
         .when()
-            .post(RestfulBookerEndpoints.ALL_BOOKINGS)
+            .post(RestfulBookerEndpoints.BOOKINGS)
         .then()
             .statusCode(200)
             .body("booking.firstname", equalTo(firstname))
@@ -110,7 +98,7 @@ public class RestfulBookerTests extends BaseConfig {
     public void getAllBookingIds() {
         given()
         .when()
-            .get( RestfulBookerEndpoints.ALL_BOOKINGS )
+            .get( RestfulBookerEndpoints.BOOKINGS )
         .then()
             .statusCode(200)
             .body("$", not(empty()));
@@ -130,17 +118,8 @@ public class RestfulBookerTests extends BaseConfig {
         String token = getAuthToken();
         int bookingId = createBooking();
 
-        Map<String, Object> bookingDates = new HashMap<>();
-        bookingDates.put("checkin", checkin);
-        bookingDates.put("checkout", checkout);
+        Map<String, Object> updatedBooking = buildBookingPayload(firstname, lastname, totalprice, depositpaid, checkin, checkout, additionalneeds);
 
-        Map<String, Object> updatedBooking = new HashMap<>();
-        updatedBooking.put("firstname", firstname);
-        updatedBooking.put("lastname", lastname);
-        updatedBooking.put("totalprice", totalprice);
-        updatedBooking.put("depositpaid", depositpaid);
-        updatedBooking.put("bookingdates", bookingDates);
-        updatedBooking.put("additionalneeds", additionalneeds);
 
         given()
             .pathParam("bookingId", bookingId)

@@ -23,32 +23,49 @@ public class TestUtils {
     }
 
     public static int createBooking() {
-        return createBooking("Default", "User", 123, true, "2025-01-01", "2025-01-02", "Breakfast");
+        return createBooking("John", "Doe", 123, true, "2025-01-01", "2025-01-02", "Breakfast");
     }
 
     public static int createBooking(String firstname, String lastname, int totalprice, boolean depositpaid,
                                     String checkin, String checkout, String additionalneeds) {
 
+        Map<String, Object> requestBody = buildBookingPayload(
+                firstname, lastname, totalprice, depositpaid, checkin, checkout, additionalneeds);
+
+        return given()
+                .contentType("application/json")
+                .body(requestBody)
+            .when()
+                .post(RestfulBookerEndpoints.BOOKINGS)
+            .then()
+                .statusCode(200)
+                .extract()
+                .path("bookingid");
+    }
+
+    public static Map<String, Object> buildBookingPayload(
+            String firstname,
+            String lastname,
+            Object totalprice,
+            boolean depositpaid,
+            String checkin,
+            String checkout,
+            String additionalneeds) {
+
         Map<String, Object> bookingDates = new HashMap<>();
         bookingDates.put("checkin", checkin);
         bookingDates.put("checkout", checkout);
 
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("firstname", firstname);
-        requestBody.put("lastname", lastname);
-        requestBody.put("totalprice", totalprice);
-        requestBody.put("depositpaid", depositpaid);
-        requestBody.put("bookingdates", bookingDates);
-        requestBody.put("additionalneeds", additionalneeds);
+        Map<String, Object> booking = new HashMap<>();
+        booking.put("firstname", firstname);
+        booking.put("lastname", lastname);
+        booking.put("totalprice", totalprice);
+        booking.put("depositpaid", depositpaid);
+        booking.put("bookingdates", bookingDates);
+        booking.put("additionalneeds", additionalneeds);
 
-        return given()
-                    .contentType("application/json")
-                    .body(requestBody)
-                .when()
-                    .post(RestfulBookerEndpoints.ALL_BOOKINGS)
-                .then()
-                    .statusCode(200)
-                    .extract()
-                    .path("bookingid");
+        return booking;
     }
+
+
 }

@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.qameta.allure.*;
 
 import java.util.Map;
-import java.util.HashMap;
 
 public class RestfulBookerNegativeTests extends BaseConfig {
 
@@ -26,21 +25,12 @@ public class RestfulBookerNegativeTests extends BaseConfig {
     @Test
     public void createNewBooking_withMissingField_shouldFail() {
 
-        Map<String, Object> bookingDates = new HashMap<>();
-        bookingDates.put("checkin", "2025-01-02");
-        bookingDates.put("checkout", "2025-01-02");
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("lastname", "Plummer");
-        requestBody.put("totalprice", 99.99);
-        requestBody.put("depositpaid", true);
-        requestBody.put("bookingdates", bookingDates);
-        requestBody.put("additionalneeds", "Fruit");
+        Map<String, Object> requestBody = buildBookingPayload(null, "Plummer", 99.99, true, "2025-01-01", "2025-01-02", "Fruit");
 
         given()
             .body(requestBody)
         .when()
-            .post(RestfulBookerEndpoints.ALL_BOOKINGS)
+            .post(RestfulBookerEndpoints.BOOKINGS)
         .then()
             .statusCode(400); //should throw a 400 but throws a 500
     }
@@ -54,22 +44,12 @@ public class RestfulBookerNegativeTests extends BaseConfig {
     @Test
     public void createNewBooking_withInvalidType_shouldFail() {
 
-        Map<String, Object> bookingDates = new HashMap<>();
-        bookingDates.put("checkin", "2025-01-01");
-        bookingDates.put("checkout", "2025-01-02");
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("firstname", "Harry");
-        requestBody.put("lastname", "Plummer");
-        requestBody.put("totalprice", "99.99"); //Invalid type
-        requestBody.put("depositpaid", true);
-        requestBody.put("bookingdates", bookingDates);
-        requestBody.put("additionalneeds", "Fruit");
+        Map<String, Object> requestBody = buildBookingPayload("Harry", "Plummer", "invalid_number", true, "2025-01-01", "2025-01-02", "Fruit");
 
         given()
             .body(requestBody)
         .when()
-            .post(RestfulBookerEndpoints.ALL_BOOKINGS)
+            .post(RestfulBookerEndpoints.BOOKINGS)
         .then()
             .statusCode(400); //should throw a 400 but succeeds with a 200
     }
@@ -102,17 +82,7 @@ public class RestfulBookerNegativeTests extends BaseConfig {
 
         int bookingId = createBooking();
 
-        Map<String, Object> bookingDates = new HashMap<>();
-        bookingDates.put("checkin", "2025-01-01");
-        bookingDates.put("checkout", "2025-01-02");
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("firstname", "Harry");
-        requestBody.put("lastname", "Plummer");
-        requestBody.put("totalprice", 99.99);
-        requestBody.put("depositpaid", true);
-        requestBody.put("bookingdates", bookingDates);
-        requestBody.put("additionalneeds", "Fruit");
+        Map<String, Object> requestBody = buildBookingPayload("Harry", "Plummer", 99.99, true, "2025-01-01", "2025-01-02", "Fruit");
 
         given()
             .pathParam("bookingId", bookingId)
