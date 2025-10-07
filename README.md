@@ -17,6 +17,7 @@ To run Rest Assured tests locally, your system must have Java installed and be p
 2. After installing, you must set the JAVA_HOME environment variable and update your PATH (It's different if your on windows or mac so I won't give a how to here)
 4. Open the project in your IDE of choice  
 5. Wait for the project to build
+6. Install Maven (It's different if your on windows or mac so I won't give a how to here)
 
 ## Running the Tests
 
